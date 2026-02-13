@@ -25,7 +25,7 @@ public class ProductService
         });
     }
 
-    public async Task<ProductDto?> GetByIdAsync(Guid id)
+    public async Task<ProductDto?> GetByIdAsync(int id) // 👈 CAMBIADO
     {
         var product = await _productRepository.GetByIdAsync(id);
 
@@ -46,7 +46,7 @@ public class ProductService
         await _productRepository.AddAsync(product);
     }
 
-    public async Task UpdateAsync(Guid id, ProductDto dto)
+    public async Task UpdateAsync(int id, ProductDto dto) // 👈 CAMBIADO
     {
         var product = await _productRepository.GetByIdAsync(id);
 
@@ -58,7 +58,7 @@ public class ProductService
         await _productRepository.UpdateAsync(product);
     }
 
-    public async Task DeleteAsync(Guid id)
+    public async Task DeleteAsync(int id) // 👈 CAMBIADO
     {
         await _productRepository.DeleteAsync(id);
     }

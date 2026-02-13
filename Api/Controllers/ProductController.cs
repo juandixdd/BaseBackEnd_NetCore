@@ -22,7 +22,7 @@ public class ProductController : ControllerBase
         => Ok(await _service.GetAllAsync());
 
     [HttpGet("{id}")]
-    public async Task<IActionResult> GetById(Guid id)
+    public async Task<IActionResult> GetById(int id)
         => Ok(await _service.GetByIdAsync(id));
 
     [HttpPost]
@@ -33,14 +33,14 @@ public class ProductController : ControllerBase
     }
 
     [HttpPut("{id}")]
-    public async Task<IActionResult> Update(Guid id, ProductDto dto)
+    public async Task<IActionResult> Update(int id, ProductDto dto)
     {
         await _service.UpdateAsync(id, dto);
         return NoContent();
     }
 
     [HttpDelete("{id}")]
-    public async Task<IActionResult> Delete(Guid id)
+    public async Task<IActionResult> Delete(int id)
     {
         await _service.DeleteAsync(id);
         return NoContent();

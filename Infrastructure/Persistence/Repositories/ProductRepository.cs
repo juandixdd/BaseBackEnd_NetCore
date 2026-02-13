@@ -21,7 +21,7 @@ public class ProductRepository : IProductRepository
             .ToListAsync();
     }
 
-    public async Task<Product?> GetByIdAsync(Guid id)
+    public async Task<Product?> GetByIdAsync(int id) // 👈 CAMBIADO
     {
         return await _context.Products
             .FirstOrDefaultAsync(p => p.Id == id);
@@ -39,7 +39,7 @@ public class ProductRepository : IProductRepository
         await _context.SaveChangesAsync();
     }
 
-    public async Task DeleteAsync(Guid id)
+    public async Task DeleteAsync(int id) // 👈 CAMBIADO
     {
         var product = await _context.Products.FindAsync(id);
 

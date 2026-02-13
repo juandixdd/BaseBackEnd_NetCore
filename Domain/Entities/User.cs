@@ -2,7 +2,8 @@
 {
     public class User
     {
-        public Guid Id { get; private set; } = Guid.NewGuid();
+        public int Id { get; private set; }   // 👈 int autoincremental
+
         public string Email { get; private set; }
         public string PasswordHash { get; private set; }
 

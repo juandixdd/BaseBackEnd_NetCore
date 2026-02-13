@@ -1,176 +1,164 @@
-Perfecto 🚀
-Te voy a dejar un README profesional, claro, estructurado y listo para GitHub, mostrando:
+# 📦 BaseBackend API
 
-📌 Descripción del proyecto
+<div align="center">
 
-🏗 Arquitectura
+![.NET 8](https://img.shields.io/badge/.NET%208-512BD4?style=for-the-badge&logo=dotnet&logoColor=white)
+![C#](https://img.shields.io/badge/C%23-239120?style=for-the-badge&logo=c-sharp&logoColor=white)
+![EF Core](https://img.shields.io/badge/EF%20Core-512BD4?style=for-the-badge&logo=dotnet&logoColor=white)
+![SQL Server](https://img.shields.io/badge/SQL%20Server-CC2927?style=for-the-badge&logo=microsoft-sql-server&logoColor=white)
+![JWT](https://img.shields.io/badge/JWT-Auth-000000?style=for-the-badge&logo=json-web-tokens&logoColor=white)
 
-⚙️ Tecnologías usadas
+**Una API REST profesional, escalable y modular basada en Clean Architecture.**
 
-🔐 Autenticación
+[Reportar Bug](https://github.com/) · [Solicitar Feature](https://github.com/)
 
-📦 Endpoints documentados
+</div>
 
-📄 Ejemplos de request/response
+---
 
-🧠 Paginación
+## 📑 Tabla de Contenido
+- [📍 Descripción General](#-descripción-general)
+- [🏗 Arquitectura](#-arquitectura)
+- [🛠 Tecnologías](#-tecnologías)
+- [⚙ Configuración e Instalación](#-configuración-e-instalación)
+- [🔐 Autenticación y Seguridad](#-autenticación-y-seguridad)
+- [📘 Documentación de API](#-documentación-de-api)
+- [✨ Características Clave](#-características-clave)
+- [🚀 Flujo de Prueba](#-flujo-de-prueba)
+- [🔮 Roadmap](#-roadmap)
 
-🚀 Cómo ejecutar
+---
 
-🛠 Migraciones automáticas
+## 📍 Descripción General
 
-📘 Buenas prácticas implementadas
+**BaseBackend** es una plantilla de arquitectura robusta diseñada para acelerar el desarrollo de servicios RESTful en .NET. Implementa las mejores prácticas de la industria, incluyendo separación de responsabilidades, inyección de dependencias, manejo global de errores y optimización de consultas a base de datos.
 
-Puedes copiarlo directamente como README.md.
+Es ideal para iniciar proyectos que requieran escalabilidad, mantenibilidad y seguridad desde el día uno.
 
-📦 BaseBackend API
+---
 
-API REST desarrollada en ASP.NET Core siguiendo principios de Clean Architecture, con autenticación JWT, manejo global de errores, paginación profesional y AutoMapper.
+## 🏗 Arquitectura
 
-🚀 Características Principales
+El proyecto sigue estrictamente los principios de **Clean Architecture**, asegurando que el núcleo del negocio sea independiente de frameworks externos, UI o bases de datos.
 
-✅ Clean Architecture
-✅ JWT Authentication
-✅ Paginación profesional
-✅ AutoMapper
-✅ Middleware global de excepciones
-✅ Migraciones automáticas
-✅ Swagger con soporte JWT
-✅ Validaciones personalizadas
-✅ Separación por módulos
-
-🏗 Arquitectura del Proyecto
+```text
 BaseBackend
 │
-├── Api
-│   ├── Controllers
-│   ├── Middlewares
-│
-├── Application
-│   ├── Services
-│   ├── DTOs
-│   ├── Common
-│       ├── Exceptions
-│       ├── Pagination
-│       ├── Mappings
-│
-├── Domain
-│   ├── Entities
-│   ├── Interfaces
-│
-├── Infrastructure
-│   ├── Persistence
-│   ├── Security
+├── 📂 Api                 → (Presentation) Controladores, Middlewares, Entry Point.
+├── 📂 Application         → (Core) Lógica de negocio, DTOs, Interfaces, Mappings.
+├── 📂 Domain              → (Core) Entidades, Value Objects, Interfaces de Repositorio.
+└── 📂 Infrastructure      → (External) EF Core, SQL Server, Implementación de Repositorios, JWT.
 
-🛠 Tecnologías Utilizadas
+Distribución de Responsabilidades
+Capa	Descripción
+Domain	Contiene las entidades y las reglas de negocio empresariales. No tiene dependencias externas.
+Application	Orquesta los casos de uso. Contiene DTOs, validaciones y lógica de aplicación.
+Infrastructure	Implementa la persistencia de datos (EF Core), servicios de identidad y acceso a sistemas externos.
+Api	Punto de entrada de la aplicación (Controllers). Gestiona la configuración y exposición HTTP.
+🛠 Tecnologías
 
-.NET 8
+    Framework: .NET 8 SDK
 
-Entity Framework Core
+    Web API: ASP.NET Core
 
-SQL Server
+    ORM: Entity Framework Core
 
-JWT Bearer Authentication
+    Base de Datos: SQL Server
 
-AutoMapper
+    Autenticación: JWT Bearer Authentication
 
-Swagger (OpenAPI)
+    Mapeo: AutoMapper
 
-⚙️ Configuración
-🔑 JWT (appsettings.json)
+    Documentación: Swagger / OpenAPI
+
+⚙ Configuración e Instalación
+1. Prerrequisitos
+
+    .NET 8 SDK instalado.
+
+    SQL Server (LocalDB o instancia completa).
+
+2. Configuración (appsettings.json)
+
+Configura tu cadena de conexión y las claves secretas para JWT en el proyecto Api.
+JSON
+
+"ConnectionStrings": {
+  "DefaultConnection": "Server=YOUR_SERVER;Database=BaseBackendDb;Trusted_Connection=True;TrustServerCertificate=True;"
+},
 "Jwt": {
-  "Key": "YOUR_SECRET_KEY",
+  "Key": "TU_CLAVE_SUPER_SECRETA_DEBE_SER_LARGA",
   "Issuer": "BaseBackend",
   "Audience": "BaseBackendUsers"
 }
 
-🗄 Base de Datos
+3. Ejecución
 
-Las migraciones se aplican automáticamente al iniciar la aplicación:
+Las migraciones se aplican automáticamente al iniciar la aplicación (db.Database.Migrate()).
+Bash
 
-db.Database.Migrate();
+# Clonar el repositorio
+git clone [https://github.com/tu-usuario/BaseBackend.git](https://github.com/tu-usuario/BaseBackend.git)
 
+# Restaurar dependencias
+dotnet restore
 
-No es necesario ejecutar update-database.
+# Ejecutar la API
+dotnet run --project BaseBackend.Api
 
-🔐 Autenticación
+Accede a la documentación interactiva en:
 
-La API usa JWT Bearer.
+👉 https://localhost:{port}/swagger
+🔐 Autenticación y Seguridad
 
-Después de hacer login, debes enviar el token en el header:
+La API utiliza tokens JWT (JSON Web Tokens).
+Para acceder a los endpoints protegidos, debes incluir el token en el encabezado de la petición:
+HTTP
 
 Authorization: Bearer {token}
 
+📘 Documentación de API
+🔑 Auth Module (Público)
+Método	Endpoint	Descripción
+POST	/api/Auth/register	Registro de nuevo usuario.
+POST	/api/Auth/login	Inicio de sesión. Retorna el JWT.
 
-Swagger ya está configurado para soportar JWT.
+<details>
+<summary>👁‍🗨 Ver ejemplo de Login</summary>
 
-📘 Endpoints
-🔑 Auth Module
+Request:
+JSON
 
-Base URL:
-
-/api/Auth
-
-📝 Register
-POST /api/Auth/register
-
-Registra un nuevo usuario.
-
-Request Body
 {
   "email": "user@email.com",
-  "password": "123456"
+  "password": "password123"
 }
 
-Responses
-Código	Descripción
-201	Usuario creado
-400	Email inválido / ya existe
-400	Password inválido
-🔓 Login
-POST /api/Auth/login
+Response (200 OK):
+JSON
 
-Autentica un usuario y devuelve un JWT.
-
-Request Body
-{
-  "email": "user@email.com",
-  "password": "123456"
-}
-
-Response
 {
   "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
 }
 
-Responses
-Código	Descripción
-200	Login exitoso
-401	Credenciales inválidas
-400	Datos inválidos
-📦 Product Module
+</details>
+📦 Product Module (Protegido)
+Método	Endpoint	Descripción
+GET	/api/Product	Listado paginado de productos.
+GET	/api/Product/{id}	Obtener detalle de un producto.
+POST	/api/Product	Crear un producto.
+PUT	/api/Product/{id}	Actualizar un producto.
+DELETE	/api/Product/{id}	Eliminar un producto.
 
-Base URL:
+<details>
+<summary>👁‍🗨 Ver ejemplo de Paginación</summary>
 
-/api/Product
-
-
-🔒 Requiere autenticación.
-
-📄 Get All (Paginado)
 GET /api/Product?page=1&pageSize=10
-Query Parameters
-Parámetro	Tipo	Default	Máximo
-page	int	1	—
-pageSize	int	10	50
-Response
+JSON
+
 {
   "items": [
-    {
-      "id": 1,
-      "name": "Laptop",
-      "price": 1500
-    }
+    { "id": 1, "name": "Laptop", "price": 1500 }
   ],
   "page": 1,
   "pageSize": 10,
@@ -178,124 +166,65 @@ Response
   "totalPages": 3
 }
 
-📄 Get By Id
-GET /api/Product/{id}
-Response
-{
-  "id": 1,
-  "name": "Laptop",
-  "price": 1500
-}
+</details>
+✨ Características Clave
+⚠ Manejo Global de Errores
 
-Errors
-Código	Descripción
-404	Producto no encontrado
-➕ Create Product
-POST /api/Product
-Request Body
-{
-  "name": "Mouse",
-  "price": 50
-}
+Middleware personalizado que intercepta excepciones y estandariza la respuesta HTTP.
 
-Response
-{
-  "message": "Product created successfully"
-}
+    400 Bad Request: ValidationException
 
-Errors
-Código	Descripción
-400	Nombre requerido
-400	Precio inválido
-✏ Update Product
-PUT /api/Product/{id}
-Request Body
-{
-  "name": "Mouse Gamer",
-  "price": 80
-}
+    401 Unauthorized: UnauthorizedException
 
-Responses
-Código	Descripción
-204	Actualizado
-404	No encontrado
-400	Datos inválidos
-❌ Delete Product
-DELETE /api/Product/{id}
-Responses
-Código	Descripción
-204	Eliminado
-404	No encontrado
-⚠ Manejo de Errores
+    404 Not Found: NotFoundException
 
-Todos los errores son manejados por un middleware global.
+    500 Internal Error: Exception genérica
 
-Formato estándar:
+Respuesta estándar:
+JSON
 
 {
   "success": false,
   "status": 400,
-  "error": "Product name is required"
+  "error": "El nombre del producto es obligatorio."
 }
 
+📄 Paginación Optimizada
 
-Tipos de errores:
-
-ValidationException → 400
-
-UnauthorizedException → 401
-
-NotFoundException → 404
-
-Error inesperado → 500
-
-🧠 Paginación
-
-Implementada usando:
-
-Skip
-
-Take
-
-TotalCount
-
-TotalPages
-
-Optimizada para ejecutarse en SQL, no en memoria.
-
+La paginación se realiza directamente en la base de datos usando Skip y Take, asegurando eficiencia incluso con millones de registros.
 🗺 AutoMapper
 
-Se usa AutoMapper para:
+Mapeo automático entre Entidades y DTOs (Entity ↔ DTO) para reducir el código repetitivo y desacoplar la capa de persistencia de la capa de presentación.
+🚀 Flujo de Prueba
 
-Mapear Entity → DTO
+Sigue estos pasos para verificar el funcionamiento:
 
-Mapear DTO → Entity
+    Registrar Usuario: Usa el endpoint POST /Auth/register.
 
-Reducir código repetitivo
+    Login: Usa POST /Auth/login y copia el token de la respuesta.
 
-Mejorar mantenibilidad
+    Autorizar en Swagger: Haz clic en el botón Authorize (candado) y escribe Bearer TU_TOKEN.
 
-Profiles ubicados en:
+    Crear Producto: Usa POST /Product con el usuario autenticado.
 
-Application/Common/Mappings
+    Listar Productos: Usa GET /Product para ver la paginación en acción.
 
-🚀 Cómo Ejecutar
-dotnet restore
-dotnet run
+🔮 Roadmap
 
+    [ ] Filtros dinámicos y búsqueda avanzada.
 
-Swagger disponible en:
+    [ ] Ordenamiento dinámico de columnas.
 
-https://localhost:{port}/swagger
+    [ ] Implementación de Soft Delete (Borrado lógico).
 
-🧪 Flujo Completo de Prueba
+    [ ] Versionado de API (v1, v2).
 
-Registrar usuario
+    [ ] Implementación de Rate Limiting.
 
-Hacer login
+    [ ] Patrón CQRS con MediatR.
 
-Copiar token
+    [ ] Unit Testing con xUnit.
 
-Autorizar en Swagger
-
-Consumir endpoints protegidos
+<div align="center">
+<sub>Desarrollado con ❤️ en .NET 8</sub>
+</div>

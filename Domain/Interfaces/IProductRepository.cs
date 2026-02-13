@@ -9,5 +9,6 @@ namespace BaseBackend.Domain.Interfaces
         Task AddAsync(Product product);
         Task UpdateAsync(Product product);
         Task DeleteAsync(int id);
+        IQueryable<Product> Query();
     }
 }

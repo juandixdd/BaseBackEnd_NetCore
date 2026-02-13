@@ -49,4 +49,9 @@ public class ProductRepository : IProductRepository
         _context.Products.Remove(product);
         await _context.SaveChangesAsync();
     }
+    
+    public IQueryable<Product> Query()
+    {
+        return _context.Products.AsQueryable();
+    }
 }

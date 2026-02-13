@@ -18,33 +18,22 @@ public class AuthController : ControllerBase
     [HttpPost("register")]
     public async Task<IActionResult> Register([FromBody] RegisterRequest request)
     {
-        try
-        {
-            await _authService.RegisterAsync(request.Email, request.Password);
+        await _authService.RegisterAsync(request.Email, request.Password);
 
-            return StatusCode(201, new
-            {
-                message = "User registered successfully"
-            });
-        }
-        catch (Exception ex)
+        return StatusCode(201, new
         {
-            return BadRequest(new { message = ex.Message });
-        }
+            message = "User registered successfully"
+        });
     }
 
     [HttpPost("login")]
     public async Task<IActionResult> Login([FromBody] LoginRequest request)
     {
-        try
-        {
-            var token = await _authService.LoginAsync(request.Email, request.Password);
+        var token = await _authService.LoginAsync(request.Email, request.Password);
 
-            return Ok(new { token });
-        }
-        catch (Exception ex)
+        return Ok(new
         {
-            return Unauthorized(new { message = ex.Message });
-        }
+            token
+        });
     }
 }

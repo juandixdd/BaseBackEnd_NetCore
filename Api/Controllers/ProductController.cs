@@ -1,4 +1,5 @@
-﻿using BaseBackend.Application.DTOs;
+﻿using BaseBackend.Application.Common.Pagination;
+using BaseBackend.Application.DTOs;
 using BaseBackend.Application.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -18,22 +19,32 @@ public class ProductController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<IActionResult> GetAll()
-        => Ok(await _service.GetAllAsync());
+    public async Task<IActionResult> GetAll([FromQuery] PaginationParams pagination)
+    {
+        var result = await _service.GetAllAsync(pagination);
+        return Ok(result);
+    }
 
     [HttpGet("{id}")]
     public async Task<IActionResult> GetById(int id)
-        => Ok(await _service.GetByIdAsync(id));
+    {
+        var product = await _service.GetByIdAsync(id);
+
+        if (product is null)
+            throw new KeyNotFoundException("Product not found");
+
+        return Ok(product);
+    }
 
     [HttpPost]
-    public async Task<IActionResult> Create(ProductDto dto)
+    public async Task<IActionResult> Create([FromBody] ProductDto dto)
     {
         await _service.CreateAsync(dto);
-        return Ok();
+        return StatusCode(201, new { message = "Product created successfully" });
     }
 
     [HttpPut("{id}")]
-    public async Task<IActionResult> Update(int id, ProductDto dto)
+    public async Task<IActionResult> Update(int id, [FromBody] ProductDto dto)
     {
         await _service.UpdateAsync(id, dto);
         return NoContent();

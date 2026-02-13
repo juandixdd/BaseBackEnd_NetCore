@@ -1,5 +1,6 @@
 ﻿using BaseBackend.Domain.Entities;
 using BaseBackend.Domain.Interfaces;
+using BaseBackend.Application.Common.Exceptions;
 
 namespace BaseBackend.Application.Services;
 
@@ -19,13 +20,25 @@ public class AuthService
         _jwtTokenGenerator = jwtTokenGenerator;
     }
 
-    // ✅ YA NO DEVUELVE TOKEN
+    // ✅ REGISTRO
     public async Task RegisterAsync(string email, string password)
     {
+        if (string.IsNullOrWhiteSpace(email))
+            throw new ValidationException("Email is required");
+
+        if (!email.Contains("@"))
+            throw new ValidationException("Invalid email format");
+
+        if (string.IsNullOrWhiteSpace(password))
+            throw new ValidationException("Password is required");
+
+        if (password.Length < 6)
+            throw new ValidationException("Password must be at least 6 characters");
+
         var existingUser = await _userRepository.GetByEmailAsync(email);
 
         if (existingUser != null)
-            throw new Exception("User already exists");
+            throw new ValidationException("User already exists");
 
         var passwordHash = _passwordHasher.Hash(password);
 
@@ -34,18 +47,21 @@ public class AuthService
         await _userRepository.AddAsync(user);
     }
 
-    // ✅ SOLO LOGIN GENERA TOKEN
+    // ✅ LOGIN
     public async Task<string> LoginAsync(string email, string password)
     {
+        if (string.IsNullOrWhiteSpace(email) || string.IsNullOrWhiteSpace(password))
+            throw new ValidationException("Email and password are required");
+
         var user = await _userRepository.GetByEmailAsync(email);
 
         if (user == null)
-            throw new Exception("Invalid credentials");
+            throw new UnauthorizedException("Invalid email or password");
 
         var isValid = _passwordHasher.Verify(password, user.PasswordHash);
 
         if (!isValid)
-            throw new Exception("Invalid credentials");
+            throw new UnauthorizedException("Invalid email or password");
 
         return _jwtTokenGenerator.GenerateToken(user);
     }

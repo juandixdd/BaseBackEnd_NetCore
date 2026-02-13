@@ -2,11 +2,15 @@ using BaseBackend.Application.Services;
 using BaseBackend.Domain.Interfaces;
 using BaseBackend.Infrastructure.Persistence;
 using BaseBackend.Infrastructure.Security;
+using BaseBackend.Infrastructure.Persistence.Repositories;
+using BaseBackend.Api.Middlewares;
+
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
+
 using System.Text;
-using BaseBackend.Infrastructure.Persistence.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -61,26 +65,27 @@ builder.Services.AddAuthorization();
 // ----------------------
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
+
 builder.Services.AddSwaggerGen(options =>
 {
-    options.AddSecurityDefinition("Bearer", new Microsoft.OpenApi.Models.OpenApiSecurityScheme
+    options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
     {
         Name = "Authorization",
-        Type = Microsoft.OpenApi.Models.SecuritySchemeType.Http,
+        Type = SecuritySchemeType.Http,
         Scheme = "bearer",
         BearerFormat = "JWT",
-        In = Microsoft.OpenApi.Models.ParameterLocation.Header,
+        In = ParameterLocation.Header,
         Description = "Enter JWT token"
     });
 
-    options.AddSecurityRequirement(new Microsoft.OpenApi.Models.OpenApiSecurityRequirement
+    options.AddSecurityRequirement(new OpenApiSecurityRequirement
     {
         {
-            new Microsoft.OpenApi.Models.OpenApiSecurityScheme
+            new OpenApiSecurityScheme
             {
-                Reference = new Microsoft.OpenApi.Models.OpenApiReference
+                Reference = new OpenApiReference
                 {
-                    Type = Microsoft.OpenApi.Models.ReferenceType.SecurityScheme,
+                    Type = ReferenceType.SecurityScheme,
                     Id = "Bearer"
                 }
             },
@@ -90,6 +95,17 @@ builder.Services.AddSwaggerGen(options =>
 });
 
 var app = builder.Build();
+
+
+// ==============================
+// ✅ APLICAR MIGRACIONES AUTOMÁTICAS
+// ==============================
+using (var scope = app.Services.CreateScope())
+{
+    var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+    db.Database.Migrate();
+}
+
 
 // ----------------------
 // MIDDLEWARE PIPELINE
@@ -101,10 +117,58 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-
-app.UseAuthentication(); // ⚠️ IMPORTANTE (antes de Authorization)
+app.UseMiddleware<ExceptionMiddleware>();
+app.UseAuthentication();
 app.UseAuthorization();
-
 app.MapControllers();
+
+
+// ==============================
+// ✅ MOSTRAR ENDPOINTS EN AZUL
+// ==============================
+app.Lifetime.ApplicationStarted.Register(() =>
+{
+    var endpointDataSource = app.Services.GetRequiredService<EndpointDataSource>();
+
+    var endpoints = endpointDataSource.Endpoints
+        .OfType<RouteEndpoint>()
+        .Where(e => e.Metadata.GetMetadata<Microsoft.AspNetCore.Mvc.Controllers.ControllerActionDescriptor>() != null)
+        .ToList();
+
+    var grouped = endpoints
+        .GroupBy(e =>
+        {
+            var descriptor = e.Metadata
+                .GetMetadata<Microsoft.AspNetCore.Mvc.Controllers.ControllerActionDescriptor>();
+
+            return descriptor!.ControllerName;
+        })
+        .OrderBy(g => g.Key);
+
+    Console.ForegroundColor = ConsoleColor.Blue;
+
+    Console.WriteLine("\n🚀 Registered Endpoints by Module:\n");
+
+    foreach (var group in grouped)
+    {
+        Console.WriteLine($"===== {group.Key.ToUpper()} =====");
+
+        foreach (var endpoint in group)
+        {
+            var descriptor = endpoint.Metadata
+                .GetMetadata<Microsoft.AspNetCore.Mvc.Controllers.ControllerActionDescriptor>();
+
+            var httpMethod = descriptor!.ActionConstraints?
+                .OfType<Microsoft.AspNetCore.Mvc.ActionConstraints.HttpMethodActionConstraint>()
+                .FirstOrDefault()?.HttpMethods.FirstOrDefault() ?? "HTTP";
+
+            Console.WriteLine($"{httpMethod.PadRight(6)} /{endpoint.RoutePattern.RawText}");
+        }
+
+        Console.WriteLine();
+    }
+
+    Console.ResetColor();
+});
 
 app.Run();
